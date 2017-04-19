@@ -1,0 +1,38 @@
+<!doctype html>
+<title>Map Plotter</title>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   <!--  <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=" type="text/javascript"></script> -->
+   <script src="http://maps.google.cn/maps/api/js?key=AIzaSyBcLJU-AacPUM41qXDo3PUMb6-jBpBzWvU" type="text/javascript">
+</script>
+</head>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <div class="navbar-brand">
+      	<p> Welcome </p>
+      </div>
+    </div>
+   </div>
+  </nav>
+
+<div class="container">
+<iframe
+  width="600"
+  height="450"
+  frameborder="0" style="border:0"
+  align = "middle"
+  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBcLJU-AacPUM41qXDo3PUMb6-jBpBzWvU
+    &q=IIIT+Delhi" allowfullscreen>
+</iframe>
+
+{% block body %}
+  
+<input type="submit" class="btn btn-primary btn-lg" name="upload" value="Upload">
+
+{% end block %}
+
+</div>
