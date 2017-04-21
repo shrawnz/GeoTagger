@@ -1,24 +1,8 @@
-# from PIL import Image
-# from PIL.ExifTags import TAGS
-# import exifread
-
-# def get_exif(fn):
-#     ret = {}
-#     i = Image.open(fn)
-#     info = i._getexif()
-#     for tag, value in info.items():
-#         decoded = TAGS.get(tag, tag)
-#         ret[decoded] = value
-#     print ret
-
-# f = open('exif.jpg', 'rb')
-
-# # Return Exif tags
-# tags = exifread.process_file(f)
-# print tags
-
 from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def get_exif_data(image):
     """Returns a dictionary from the exif data of an PIL Image item. Also converts the GPS Tags"""
@@ -86,10 +70,32 @@ def get_lat_lon(exif_data):
     return lat, lon
 
 
-################
-# Example ######
-################
-if __name__ == "__main__":
-    image = 'exif.jpg'
-    exif_data = get_exif_data(image)
-    print get_lat_lon(exif_data)
+
+arr = []
+# image = Image.open(path)
+# image2 = Image.open(path2)
+# exif_data = get_exif_data(image)
+# exif_data2 = get_exif_data(image2)
+# arr.append(get_lat_lon(exif_data))
+# arr.append(get_lat_lon(exif_data2))
+
+# gps = []
+# latlong = []
+
+# for i in arr:
+# 	latlong.append(i[0])
+# 	latlong.append(i[1])
+# 	gps.append(latlong)
+# 	latlong=[]
+
+# print gps
+
+path = '/home/shreyans/django/maps/media/'
+for filename in os.listdir(path):
+	imgpath = path + filename
+	image = Image.open(imgpath)
+	exif_data = get_exif_data(image)
+	d = get_lat_lon(exif_data)
+	arr.append(d[0])
+	arr.append(d[1])
+print arr

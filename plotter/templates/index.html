@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-   <!--  <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=" type="text/javascript"></script> -->
+   <script type = "text/javascript" src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
    <script src="http://maps.google.cn/maps/api/js?key=AIzaSyBcLJU-AacPUM41qXDo3PUMb6-jBpBzWvU" type="text/javascript">
 </script>
 </head>
@@ -18,21 +18,108 @@
     </div>
    </div>
   </nav>
-
-<div class="container">
-<iframe
-  width="600"
-  height="450"
-  frameborder="0" style="border:0"
-  align = "middle"
-  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBcLJU-AacPUM41qXDo3PUMb6-jBpBzWvU
-    &q=IIIT+Delhi" allowfullscreen>
-</iframe>
-
 {% block body %}
-  
-<input type="submit" class="btn btn-primary btn-lg" name="upload" value="Upload">
+<body>
 
-{% end block %}
+{% if coordinates %}
+    <div class="loader" id="loader">
+    </div>
+
+    <script type="text/javascript">
+      setTimeout(function(){
+         $('#loader').addClass("hide-loader");
+    }, 2000);
+    </script>
+
+{% endif %}
+
+  <div id="map" style="width: 500px; height: 400px;"></div>
+
+  <script type="text/javascript">
+
+ setTimeout(function(){
+
+
+  var lat = 0.0
+  var longi = 0.0
+  var coordinates = {{coordinates}}
+  //console.log(coordinates)
+    home_lat = 28.5472724
+    home_long = 77.2726976
+
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 1,
+      center: new google.maps.LatLng(0, 0),
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+
+    var infowindow = new google.maps.InfoWindow();
+
+    var marker, i;
+
+
+     marker = new google.maps.Marker({
+        position: new google.maps.LatLng(home_lat,home_long),
+        map: map
+      });
+
+    for (i = 0; i < coordinates.length; i+=2) {
+    lat = coordinates[i]
+    longi = coordinates[i+1]  
+      marker = new google.maps.Marker({
+        position: new google.maps.LatLng(lat,longi),
+        map: map
+      });
+
+      google.maps.event.addListener(marker, 'click', (function(marker, i) {
+        return function() {
+          infowindow.open(map, marker);
+        }
+      })(marker, i));
+    }
+
+        }, 2500);
+
+  </script>
+</body> 
+
+
+<style type="text/css">
+  .loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+ }
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.hide-loader{
+display:none;
+}
+
+</style>
+
+
+  
+<form action="{{ request.build_absolute_uri }}upload/" method="POST" enctype="multipart/form-data">
+           {% csrf_token %}
+          <input type="file" name="file" multiple />
+          <br />
+<input type="submit" class="btn btn-primary btn-lg" name="upload" value="Upload">
+</form>
+
+<!-- {% if uploaded_file_url %}
+    <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>
+
+{% endif %} -->
 
 </div>
+{% endblock %}
+</script>
