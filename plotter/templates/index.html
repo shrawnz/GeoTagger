@@ -1,0 +1,131 @@
+<!doctype html>
+<title>Geo Tagger</title>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   <script type = "text/javascript" src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+   <script src="http://maps.google.cn/maps/api/js?key=AIzaSyBcLJU-AacPUM41qXDo3PUMb6-jBpBzWvU" type="text/javascript">
+</script>
+</head>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <div class="navbar-brand">
+      	<p> Geo Tagger </p>
+      </div>
+    </div>
+   </div>
+  </nav>
+{% block body %}
+<body>
+
+<style type="text/css">
+  .loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    position: relative;
+    top: 50%;
+    margin: 120px auto auto auto;
+ }
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.hide-loader{
+display:none;
+}
+
+</style>
+
+{% if coordinates %}
+    <div class="loader" id="loader">
+    </div>
+
+    <script type="text/javascript">
+      setTimeout(function(){
+         $('#loader').addClass("hide-loader");
+    }, 2000);
+    </script>
+
+{% endif %}
+
+  <div id="map" style="width: 700px; height:450px; position: relative; top: 50%; margin: auto 280px auto auto;"></div>
+
+  <script type="text/javascript">
+
+ setTimeout(function(){
+
+
+  var lat = 0.0
+  var longi = 0.0
+  var coordinates = {{coordinates}}
+  console.log(coordinates)
+    home_lat = 28.5472724
+    home_long = 77.2726976
+
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 2,
+      center: new google.maps.LatLng(0, 0),
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+
+    var infowindow = new google.maps.InfoWindow();
+
+    var marker, i;
+
+
+     marker = new google.maps.Marker({
+        position: new google.maps.LatLng(home_lat,home_long),
+        map: map
+      });
+
+    for (i = 0; i < coordinates.length; i+=2) {
+    var j = i/2
+    lat = coordinates[i]
+    longi = coordinates[i+1]  
+    console.log(lat,longi)
+      marker = new google.maps.Marker({
+        position: new google.maps.LatLng(lat,longi),
+        map: map
+      });
+    }
+      google.maps.event.addListener(marker, 'click', (function(marker, j) {
+        return function() {
+          infowindow.open(map, marker);
+        }
+      })(marker, j));
+    
+
+        }, 2100);
+
+  </script>
+</body> 
+
+
+<br>
+<br>
+
+
+  <form style="margin: 0 auto; width: 220px;" action="{{ request.build_absolute_uri }}upload/" method="POST" enctype="multipart/form-data">
+           {% csrf_token %}
+          <input type="file" name="file" multiple />
+          <br>
+<input type="submit" class="btn btn-primary btn-lg" name="upload" value="Upload">
+</form>
+
+
+<!-- {% if uploaded_file_url %}
+    <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>
+
+{% endif %} -->
+{% endblock %}
+
